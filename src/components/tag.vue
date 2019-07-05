@@ -8,19 +8,20 @@
 </template>
 
 <script>
-    import axios from 'axios';
+    import { mapState, mapActions } from 'vuex';
     export default {
-        data() {
-            return {
-                tagList: []
-            }
+        computed: {
+            ...mapState('tag', {
+                tagList: state => state.tagList
+            })
+        },
+        methods: {
+            ...mapActions('tag', [
+                'reqTagList'
+            ])
         },
         created() {
-            axios.get('https://www.xuboxun.site/api/tag/list').then(({ status, data}) => {
-                if (status === 200 && data.code === 200) {
-                    this.tagList = data.result.items;
-                }
-            });
+            this.reqTagList();
         }
     }
 </script>

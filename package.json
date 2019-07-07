@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --config ./build/webpack.dev.config.js --progress --hot --inline",
-    "build": "NODE_ENV=production webpack --config ./build/webpack.build.config.js --progress"
+    "build": "NODE_ENV=production webpack --config ./build/webpack.build.config.js --progress",
+    "ssr": "nodemon server.js"
   },
   "author": "huangyifan0119@163.com",
   "license": "MIT",
@@ -13,9 +14,12 @@
     "@babel/polyfill": "^7.4.4",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
+    "express": "^4.17.1",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vue-server-renderer": "^2.6.10",
+    "vuex": "^3.0.1",
+    "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",

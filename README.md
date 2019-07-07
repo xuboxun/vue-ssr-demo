@@ -28,3 +28,19 @@ npm run build
 为了解决上述问题，ajax请求得到的数据需要独立于视图组件之外，放置在专门的数据存储容器中。所以我们首先对项目改造，使用vuex来保存数据，将数据请求和数据存储独立成service和store。  
 
 以上内容可参考vue ssr指南[数据预取](https://ssr.vuejs.org/zh/guide/data.html#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%8F%96%E5%AD%98%E5%82%A8%E5%AE%B9%E5%99%A8-data-store)部分
+
+## step-2. 引入express提供后端服务，Commit Id: [a09dbf2](https://github.com/xuboxun/vue-ssr-demo/commit/a09dbf2f417d74082b72053641142d156a90f049)  
+既然是服务端渲染，那么必然需要一个http服务，我们使用express来提供这方面的能力。  
+在server.js中，我们使用index.template.html作为页面的基本模板，服务端渲染的字符串内容将插入到```<!--vue-ssr-outlet-->```所在的位置。  
+对于所有的http请求，我们都返回固定的内容；并且，在接收到每一个请求时，都创建一个新的根Vue实例。这与vue-spa中使用一个单一的Vue实例不同，因为如果我们创建一个单一的Vue实例，那么它将在每次请求时共享，很容易造成** 交叉请求状态污染 **  
+对于交叉请求状态污染，我的理解是这样的：
+- 假设第一个用户发起请求请求，返回得到的状态state1以及页面内容view1，但是由于访问改变了这个单一的Vue实例对象的状态，由state1转变为state2，对应的页面因为状态的改变由view1变为view2
+- 当第二个用户发起同样请求的时候，正常的应该是访问state1以及对应的view1，但是由于状态已经改变了，所以最后访问得到的状态是state2以及页面view2
+- 而对于不同用户同样的http请求，却返回了不同的状态和内容，这就是交叉请求状态污染
+- 所以为了避免状态污染，我们需要对每一次请求，都保证是一个全新的应用实例
+
+创建完server.js我们```npm run ssr```来运行，访问localhost:9002，可以看到，原来模板中```<!--vue-ssr-outlet-->```的地方已经被服务端渲染出的字符串代替，且查看源代码，发现页面内容已经包含在html中，而不是由js去动态生成的。
+![](./images/server-1.jpg)
+我们查看Elements看到，有一个```data-server-rendered="true"```，他的作用是让客户端vue知道这部分内容是由服务端vue渲染的，并且以激活模式进行挂载。  
+因为当我们在客户端收到页面的html生成DOM结构后，不需要丢弃它重新由客户端vue重新生成一遍，只需要客户端vue接管这些静态的html，“激活”他们，让他们后续可以动态响应数据变化。
+

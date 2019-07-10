@@ -1,8 +1,9 @@
 # vue-ssr-demo
-a demo using vue-ssr
+一个vue ssr小项目，由spa项目一步步改造而来。
 
-## Branch vue-ssr
-基于vue-spa分支逐步改造成ssr
+## 分支信息
+- ```vue-spa``` 初始vue spa项目，传统客户端vue单页应用。
+- ```vue-ssr``` 基于vue-spa分支一步步改造成ssr。
 
 ## Install & Run 
 ``` bash

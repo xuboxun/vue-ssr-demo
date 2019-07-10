@@ -8,11 +8,14 @@ a demo using vue-ssr
 ``` bash
 npm install
 
+# 构建client和server
+npm run build
+
+# 运行
+npm start
+
 # 开发
 npm run dev
-
-# 发布
-npm run build
 ```
 
 ## Steps
@@ -68,4 +71,7 @@ npm run build
 需要注意的是，server端的css不能使用mini-css-extract-plugin，所以对css的处理需要将client和server区分开。
 
 ## step-6. 服务端，Commit Id: [76e9ce8](https://github.com/xuboxun/vue-ssr-demo/commit/76e9ce815fa28baaeab5a2aa33df5b9036b83100)
-提供http服务
+提供http服务.  
+此时先执行```npm run buuld```，在dist目录下构建出所需文件，再执行```npm start```，访问```localhost:9002```即可访问服务端渲染出的页面。  
+需要注意的是，当我们初次访问页面，返回的html包含了页面的内容，此后被服务端vue接管，也就是说之后通过路由导航访问新的页面还是走spa的那一套，而不是每次都会向服务端请求渲染好的html页面，只有刷新页面才会重新请求html。  
+查看html代码会发现有```data-server-rendered="true"```，查看开发者工具Elements却没有这个属性，是因为在客户端接管后，此属性被去除。

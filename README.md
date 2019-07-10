@@ -51,3 +51,15 @@ npm run build
 - 最后是对main.js的改写：由原来的new Vue()变为一个createApp函数，在函数内部执行new Vuex()，即每次都生成一个新的vue实例。
 
 还需要改写页面组件，将created中调用的action放到asyncData中，以便于在服务端渲染组件之前去调用得到要渲染的数据
+
+## step-4. 入口文件, Commit Id: [10740dd](https://github.com/xuboxun/vue-ssr-demo/commit/10740dd51dc8ec5123a4730192f9243aaf1c499a)
+新建两个入口文件分别用于客户端和服务端的webpack配置，原先spa中的入口文件作为这两个入口的依赖，引入createApp创建应用实例。   
+对于服务端入口：
+- 导出一个函数，每次渲染时都重复调用，创建和返回应用实例
+- 因为可能会是异步路由，所以函数中返回一个Promise，以便服务器可以等待所有内容准备就绪再开始渲染
+- 通过路由获取到所有匹配的组件，并执行asyncData以获取数据，即我们在step-2中组件中加入的asyncData
+- 当所有的组件都执行完asyncData后，将state添加到上下文中，即```context.state = store.state;```。当时用了template时，会将初始状态通过```window.__INITIAL_STATE__```的方式，以```script```注入到html中
+
+对于客户端入口：
+- 只需要创建应用程序并挂载到DOM中
+- 当初始路由完成后（以便不会重复获取服务端已返回的数据）添加路由钩子函数用于处理asyncData。

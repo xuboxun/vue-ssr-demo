@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config ./build/webpack.dev.config.js --progress --hot --inline",
-    "build": "NODE_ENV=production webpack --config ./build/webpack.build.config.js --progress",
-    "ssr": "nodemon server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "rimraf ./dist && npm run build:client && npm run build:server",
+    "build:client": "NODE_ENV=production webpack --config build/webpack.client.config.js --progress",
+    "build:server": "NODE_ENV=production webpack --config build/webpack.server.config.js --progress"
   },
   "author": "huangyifan0119@163.com",
   "license": "MIT",
@@ -19,6 +21,7 @@
     "vue-router": "^3.0.1",
     "vue-server-renderer": "^2.6.10",
     "vuex": "^3.0.1",
+    "vuex-router-sync": "^5.0.0",
     "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {

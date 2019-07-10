@@ -8,20 +8,15 @@
 </template>
 
 <script>
-    import { mapState, mapActions } from 'vuex';
+    import { mapState } from 'vuex';
     export default {
+        asyncData({ store, route }) {
+            return store.dispatch('tag/reqTagList')
+        },
         computed: {
             ...mapState('tag', {
                 tagList: state => state.tagList
             })
-        },
-        methods: {
-            ...mapActions('tag', [
-                'reqTagList'
-            ])
-        },
-        created() {
-            this.reqTagList();
         }
     }
 </script>

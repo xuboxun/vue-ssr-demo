@@ -8,25 +8,15 @@
 </template>
 
 <script>
-    import { mapActions, mapState } from 'vuex';
+    import { mapState } from 'vuex';
     export default {
+        asyncData({ store, route }) {
+            return store.dispatch('blog/reqBlogList')
+        },
         computed: {
             ...mapState('blog', {
                 blogList: state => state.blogList
             })
-        },
-        methods: {
-            ...mapActions('blog', [
-                'reqBlogList',
-            ])
-        },
-        created() {
-            this.reqBlogList();
-            // axios.get('https://www.xuboxun.site/api/blog/list?pageSize=10&pageNum=1').then(({ status, data}) => {
-            //     if (status === 200 && data.code === 200) {
-            //         this.blogList = data.result.items;
-            //     }
-            // });
         }
     }
 </script>

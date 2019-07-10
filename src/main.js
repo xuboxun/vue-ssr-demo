@@ -1,23 +1,23 @@
 import '@babel/polyfill';
 import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { sync } from 'vuex-router-sync';
 
-import store from './store';
-import routes from './routes';
+import { createStore } from './store';
+import { createRouter } from './routes';
 import App from './App';
 import './style.css';
 
-Vue.use(VueRouter);
+export function createApp() {
+    const router = createRouter();
+    const store = createStore();
 
-const router = new VueRouter({
-    mode: 'history',
-    routes: routes
-});
+    sync(store, router);
 
+    const app = new Vue({
+        router,
+        store,
+        render: h => h(App)
+    });
 
-new Vue({
-    el: '#root',
-    store,
-    router: router,
-    render: h => h(App)
-});
+    return { app, router, store };
+}

@@ -75,3 +75,12 @@ npm run dev
 此时先执行```npm run buuld```，在dist目录下构建出所需文件，再执行```npm start```，访问```localhost:9002```即可访问服务端渲染出的页面。  
 需要注意的是，当我们初次访问页面，返回的html包含了页面的内容，此后被服务端vue接管，也就是说之后通过路由导航访问新的页面还是走spa的那一套，而不是每次都会向服务端请求渲染好的html页面，只有刷新页面才会重新请求html。  
 查看html代码会发现有```data-server-rendered="true"```，查看开发者工具Elements却没有这个属性，是因为在客户端接管后，此属性被去除。
+
+## step-7. 热重载支持，提升开发效率，Commit Id: [c844e00](https://github.com/xuboxun/vue-ssr-demo/commit/c844e0050e1b75f32dcbfa5ea114a61b71980a31)
+截止到step-6，我们已经搭建了一套较为完整的ssr项目框架。但是存在的问题是，每次我们编辑客户端或者服务端代码，都需要重新执行```npm run build```，然后重启服务；对比开发spa时使用的webpack-dev-server热重载，这样的体验无疑是极差的，也极大的影响开发效率。  
+所以我们也需要自己完成热重载的功能。   
+参考官网demo[vue-hackernews-2.0](https://github.com/vuejs/vue-hackernews-2.0)的配置，我们新建一个setup-dev-server文件负责热重载相关的功能。在原先的server.js中，根据process.env.NODE_ENV是否是生产环境来采用不同的方案。
+- 如果是生产环境，则从dist目录中获取vue-ssr-server-bundle.json和vue-ssr-client-manifest.json，以此来创建renderer
+- 如果是开发环境，则由setup-dev-server来创建renderer。setup-dev-server的核心是使用webpack-hot-middleware和webpack-dev-middleware两个中间件实现热重载。
+
+至此，一个完整的ssr的开发、发布流程已经构建完毕。```npm run dev```来进行开发，```npm run build```来构建，在dist目录下生成build后的文件。

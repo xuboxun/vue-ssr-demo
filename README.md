@@ -63,3 +63,9 @@ npm run build
 对于客户端入口：
 - 只需要创建应用程序并挂载到DOM中
 - 当初始路由完成后（以便不会重复获取服务端已返回的数据）添加路由钩子函数用于处理asyncData。
+
+## step-5. webpack构建配置，Commit Id: [3592517](https://github.com/xuboxun/vue-ssr-demo/commit/359251784da859525021980cd53278e77502500e)
+需要注意的是，server端的css不能使用mini-css-extract-plugin，所以对css的处理需要将client和server区分开。
+
+## step-6. 服务端，Commit Id: [76e9ce8](https://github.com/xuboxun/vue-ssr-demo/commit/76e9ce815fa28baaeab5a2aa33df5b9036b83100)
+提供http服务

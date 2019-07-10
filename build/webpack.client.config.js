@@ -8,7 +8,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = merge(baseConfig, {
-    entry: './src/entry-client.js',
+    entry: {
+        app: './src/entry-client.js'
+    },
     module: {
         rules: [
             {

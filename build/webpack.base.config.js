@@ -8,6 +8,7 @@ module.exports = {
     output: {
         publicPath: '/dist/', // 文件路径
         path: path.resolve(__dirname, '../dist'), // 打包路径
+        filename: '[name].[chunkhash].js'
     },
     module: {
         rules: [

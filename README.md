@@ -33,7 +33,7 @@ npm run dev
 
 以上内容可参考vue ssr指南[数据预取](https://ssr.vuejs.org/zh/guide/data.html#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%8F%96%E5%AD%98%E5%82%A8%E5%AE%B9%E5%99%A8-data-store)部分
 
-## step-2. 引入express提供后端服务，Commit Id: [a09dbf2](https://github.com/xuboxun/vue-ssr-demo/commit/a09dbf2f417d74082b72053641142d156a90f049)  
+### step-2. 引入express提供后端服务，Commit Id: [a09dbf2](https://github.com/xuboxun/vue-ssr-demo/commit/a09dbf2f417d74082b72053641142d156a90f049)  
 既然是服务端渲染，那么必然需要一个http服务，我们使用express来提供这方面的能力。  
 在server.js中，我们使用index.template.html作为页面的基本模板，服务端渲染的字符串内容将插入到```<!--vue-ssr-outlet-->```所在的位置。  
 对于所有的http请求，我们都返回固定的内容；并且，在接收到每一个请求时，都创建一个新的根Vue实例。这与vue-spa中使用一个单一的Vue实例不同，因为如果我们创建一个单一的Vue实例，那么它将在每次请求时共享，很容易造成** 交叉请求状态污染 **  
@@ -48,7 +48,7 @@ npm run dev
 我们查看Elements看到，有一个```data-server-rendered="true"```，他的作用是让客户端vue知道这部分内容是由服务端vue渲染的，并且以激活模式进行挂载。  
 因为当我们在客户端收到页面的html生成DOM结构后，不需要丢弃它重新由客户端vue重新生成一遍，只需要客户端vue接管这些静态的html，“激活”他们，让他们后续可以动态响应数据变化。
 
-## step-3. 改写组件、路由和Store，Commit Id: [0415b45](https://github.com/xuboxun/vue-ssr-demo/commit/0415b459f3612bf05052757d3c5507837053eb00)
+### step-3. 改写组件、路由和Store，Commit Id: [0415b45](https://github.com/xuboxun/vue-ssr-demo/commit/0415b459f3612bf05052757d3c5507837053eb00)
 如step-2中所述，为避免交叉请求状态污染，我们需要从spa中的创建单例对象，变为创建工厂函数，每次调用时都创建一个新的对象。  
 - 首先是对路由进行改写：由原来的一个router对象变为一个createRouter函数
 - 其次是对Store的改写：由原来的一个store对象变为createStore函数；同时需要注意的是，由于使用了模块，对模块的导出也需要封装成工厂函数，每次返回一个新的对象
@@ -56,7 +56,7 @@ npm run dev
 
 还需要改写页面组件，将created中调用的action放到asyncData中，以便于在服务端渲染组件之前去调用得到要渲染的数据
 
-## step-4. 入口文件, Commit Id: [10740dd](https://github.com/xuboxun/vue-ssr-demo/commit/10740dd51dc8ec5123a4730192f9243aaf1c499a)
+### step-4. 入口文件, Commit Id: [10740dd](https://github.com/xuboxun/vue-ssr-demo/commit/10740dd51dc8ec5123a4730192f9243aaf1c499a)
 新建两个入口文件分别用于客户端和服务端的webpack配置，原先spa中的入口文件作为这两个入口的依赖，引入createApp创建应用实例。   
 对于服务端入口：
 - 导出一个函数，每次渲染时都重复调用，创建和返回应用实例
@@ -68,16 +68,16 @@ npm run dev
 - 只需要创建应用程序并挂载到DOM中
 - 当初始路由完成后（以便不会重复获取服务端已返回的数据）添加路由钩子函数用于处理asyncData。
 
-## step-5. webpack构建配置，Commit Id: [3592517](https://github.com/xuboxun/vue-ssr-demo/commit/359251784da859525021980cd53278e77502500e)
+### step-5. webpack构建配置，Commit Id: [3592517](https://github.com/xuboxun/vue-ssr-demo/commit/359251784da859525021980cd53278e77502500e)
 需要注意的是，server端的css不能使用mini-css-extract-plugin，所以对css的处理需要将client和server区分开。
 
-## step-6. 服务端，Commit Id: [76e9ce8](https://github.com/xuboxun/vue-ssr-demo/commit/76e9ce815fa28baaeab5a2aa33df5b9036b83100)
+### step-6. 服务端，Commit Id: [76e9ce8](https://github.com/xuboxun/vue-ssr-demo/commit/76e9ce815fa28baaeab5a2aa33df5b9036b83100)
 提供http服务.  
 此时先执行```npm run buuld```，在dist目录下构建出所需文件，再执行```npm start```，访问```localhost:9002```即可访问服务端渲染出的页面。  
 需要注意的是，当我们初次访问页面，返回的html包含了页面的内容，此后被服务端vue接管，也就是说之后通过路由导航访问新的页面还是走spa的那一套，而不是每次都会向服务端请求渲染好的html页面，只有刷新页面才会重新请求html。  
 查看html代码会发现有```data-server-rendered="true"```，查看开发者工具Elements却没有这个属性，是因为在客户端接管后，此属性被去除。
 
-## step-7. 热重载支持，提升开发效率，Commit Id: [c844e00](https://github.com/xuboxun/vue-ssr-demo/commit/c844e0050e1b75f32dcbfa5ea114a61b71980a31)
+### step-7. 热重载支持，提升开发效率，Commit Id: [c844e00](https://github.com/xuboxun/vue-ssr-demo/commit/c844e0050e1b75f32dcbfa5ea114a61b71980a31)
 截止到step-6，我们已经搭建了一套较为完整的ssr项目框架。但是存在的问题是，每次我们编辑客户端或者服务端代码，都需要重新执行```npm run build```，然后重启服务；对比开发spa时使用的webpack-dev-server热重载，这样的体验无疑是极差的，也极大的影响开发效率。  
 所以我们也需要自己完成热重载的功能。   
 参考官网demo[vue-hackernews-2.0](https://github.com/vuejs/vue-hackernews-2.0)的配置，我们新建一个setup-dev-server文件负责热重载相关的功能。在原先的server.js中，根据process.env.NODE_ENV是否是生产环境来采用不同的方案。

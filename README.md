@@ -44,3 +44,10 @@ npm run build
 我们查看Elements看到，有一个```data-server-rendered="true"```，他的作用是让客户端vue知道这部分内容是由服务端vue渲染的，并且以激活模式进行挂载。  
 因为当我们在客户端收到页面的html生成DOM结构后，不需要丢弃它重新由客户端vue重新生成一遍，只需要客户端vue接管这些静态的html，“激活”他们，让他们后续可以动态响应数据变化。
 
+## step-3. 改写组件、路由和Store，Commit Id: [0415b45](https://github.com/xuboxun/vue-ssr-demo/commit/0415b459f3612bf05052757d3c5507837053eb00)
+如step-2中所述，为避免交叉请求状态污染，我们需要从spa中的创建单例对象，变为创建工厂函数，每次调用时都创建一个新的对象。  
+- 首先是对路由进行改写：由原来的一个router对象变为一个createRouter函数
+- 其次是对Store的改写：由原来的一个store对象变为createStore函数；同时需要注意的是，由于使用了模块，对模块的导出也需要封装成工厂函数，每次返回一个新的对象
+- 最后是对main.js的改写：由原来的new Vue()变为一个createApp函数，在函数内部执行new Vuex()，即每次都生成一个新的vue实例。
+
+还需要改写页面组件，将created中调用的action放到asyncData中，以便于在服务端渲染组件之前去调用得到要渲染的数据

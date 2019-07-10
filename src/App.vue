@@ -1,16 +1,18 @@
 <template>
-    <div class="app">
-        <div class="nav">
-            <h1>Nav</h1>
-            <ul>
-                <li><router-link to="/">Home</router-link></li>
-                <li><router-link to="/tag">Tag</router-link></li>
-                <li><router-link to="/blog">Blog</router-link></li>
-            </ul>
-        </div>
-        <div class="body">
-            <div class="content">
-                <router-view></router-view>
+    <div id="root">
+        <div class="app">
+            <div class="nav">
+                <h1>Nav</h1>
+                <ul>
+                    <li><router-link to="/">Home</router-link></li>
+                    <li><router-link to="/tag">Tag</router-link></li>
+                    <li><router-link to="/blog">Blog</router-link></li>
+                </ul>
+            </div>
+            <div class="body">
+                <div class="content">
+                    <router-view></router-view>
+                </div>
             </div>
         </div>
     </div>
